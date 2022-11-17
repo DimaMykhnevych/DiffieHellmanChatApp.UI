@@ -1,0 +1,91 @@
+.main {
+    padding-top: 100px;
+    height: 100vh;
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+      url("../../../assets/images/chat-background.jpg");
+    .card {
+      background-color: cornsilk;
+      height: 70vh;
+      .card-content {
+        width: 100%;
+        height: 45vh;
+        border: 2px solid rgb(255, 222, 92);
+        background: url("../../../assets/images/inner-chat-background.png");
+        background-color: honeydew;
+        border-radius: 5px;
+        padding: 10px;
+        overflow: auto;
+        .empty-chat {
+          font-size: 1.5em;
+          font-style: italic;
+          font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+            "Lucida Sans", Arial, sans-serif;
+        }
+        .message-field {
+          .message {
+            padding: 5px;
+            margin: 5px;
+            width: fit-content;
+            block-size: auto;
+            background-color: rgb(44, 44, 43);
+            border-radius: 7px;
+            color: whitesmoke;
+            .time {
+              font-size: 8px;
+            }
+            .content {
+              font-size: 15px;
+            }
+            .details {
+              color: rgb(150, 148, 148);
+            }
+          }
+          .padWithoutImage {
+            margin-left: 45px;
+          }
+        }
+  
+        .myMessage {
+          flex-direction: row-reverse;
+        }
+      }
+      .send-btn {
+        background-color: rgb(115, 211, 228);
+        position: relative;
+      }
+      .spinner {
+        position: absolute;
+        left: 23px;
+        top: 15px;
+      }
+      .header {
+        font-family: "Cormorant Unicase", serif;
+        color: rgb(109, 22, 190);
+        font-size: 4em;
+      }
+      .input_msg_write input {
+        background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+        border: medium none;
+        color: #4c4c4c;
+        background-color: honeydew;
+        font-size: 15px;
+        min-height: 48px;
+        width: 50%;
+      }
+    }
+  }
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(136, 136, 136, 0.507);
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }

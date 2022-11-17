@@ -1,0 +1,59 @@
+<div class="main container-fluid">
+  <div class="row d-flex justify-content-center align-self-center">
+    <div class="col-lg-7">
+      <mat-card class="card d-flex flex-column justify-content-around">
+        <h3 class="text-center header">Chat</h3>
+        <mat-card-content #scrollMe class="card-content">
+          <div class="text-center empty-chat" *ngIf="messages.length === 0">
+            Chat is empty
+          </div>
+          <div
+            id="messages-box"
+            *ngFor="let message of messages; index as i"
+            class="message-field"
+          >
+            <div
+              [class.myMessage]="isMyMessage(message.senderName)"
+              class="msg-wrapper d-flex align-items-center"
+            >
+              <div
+                class="message"
+                [class.padWithoutImage]="!isMyMessage(message.senderName)"
+              >
+                <div>
+                  <small class="details">{{ message.senderName }}</small>
+                </div>
+                <div class="content">
+                  {{ message.content }}
+                </div>
+                <div class="time details">
+                  {{ message.sendingDate | date: "medium" }}
+                </div>
+                {{ i === messages.length - 1 ? scrollToBottom() : null }}
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <div class="input_msg_write d-flex justify-content-center">
+            <input
+              type="text"
+              [value]="txtMessage"
+              (input)="onMessageInput($event)"
+              (keydown.enter)="sendMessage()"
+              placeholder="Type a message"
+            />
+            <button
+              class="send-btn"
+              mat-raised-button
+              type="button"
+              (click)="sendMessage()"
+            >
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>
