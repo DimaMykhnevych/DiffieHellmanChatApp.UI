@@ -1,3 +1,3 @@
 export class LocalStorageConstants {
-  public static userInfoStorageKey = 'userInfo';
+  public static userInfoStorageKey = 'currentUserInfo';
 }

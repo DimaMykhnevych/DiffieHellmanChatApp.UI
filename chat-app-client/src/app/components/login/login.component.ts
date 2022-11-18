@@ -6,7 +6,9 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LocalStorageConstants } from 'src/app/constants/local-storage-constants';
+import { AuthForm } from 'src/app/models/auth-form';
+import { AuthResponse } from 'src/app/models/auth-response';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +19,11 @@ export class LoginComponent implements OnInit {
   public form: FormGroup = this._builder.group({});
   public errorMessage: string = '';
 
-  constructor(private _builder: FormBuilder, private _router: Router) {}
+  constructor(
+    private _builder: FormBuilder,
+    private _router: Router,
+    private _auth: AuthService
+  ) {}
 
   public ngOnInit(): void {
     this.initializeForm();
@@ -25,8 +31,15 @@ export class LoginComponent implements OnInit {
 
   public onLoginButtonClick(): void {
     const username: string = this.form.value.login;
-    localStorage.setItem(LocalStorageConstants.userInfoStorageKey, username);
-    this._router.navigate(['/chat']);
+    this.performLogin({ username: username });
+  }
+
+  private performLogin(value: AuthForm): void {
+    this._auth.authorize(value).subscribe((authResponse: AuthResponse) => {
+      if (authResponse.isAuthorized) {
+        this._router.navigate(['/chat']);
+      }
+    });
   }
 
   private initializeForm(): void {

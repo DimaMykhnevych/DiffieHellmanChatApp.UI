@@ -1,7 +1,10 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { LocalStorageConstants } from 'src/app/constants/local-storage-constants';
 import { Message } from 'src/app/models/message';
+import { AuthService } from 'src/app/services/auth.service';
 import { ChatHub } from 'src/app/services/chat-hub.service';
+import { CurrentUserService } from 'src/app/services/current-user.service';
 
 @Component({
   selector: 'app-chat',
@@ -16,13 +19,18 @@ export class ChatComponent implements OnInit {
 
   @ViewChild('scrollMe') private myScrollContainer!: ElementRef;
 
-  constructor(private _chatHub: ChatHub) {
+  constructor(
+    private _chatHub: ChatHub,
+    private _currentUserService: CurrentUserService,
+    private _authService: AuthService,
+    private router: Router
+  ) {
     this.subscribeToEvents();
   }
 
   ngOnInit(): void {
-    this.currentUserName =
-      localStorage.getItem(LocalStorageConstants.userInfoStorageKey) || '';
+    this._chatHub.connect();
+    this.currentUserName = this._currentUserService.userInfo.username;
   }
 
   public sendMessage(): void {
@@ -38,6 +46,12 @@ export class ChatComponent implements OnInit {
       this.txtMessage = '';
       this._chatHub.sendChatMessage(message);
     }
+  }
+
+  public logout() {
+    this._authService.unauthorize();
+    this._chatHub.disconnect();
+    this.router.navigate(['/login']);
   }
 
   public onMessageInput(event: Event): void {
