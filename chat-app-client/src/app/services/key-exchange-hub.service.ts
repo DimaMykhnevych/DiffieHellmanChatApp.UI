@@ -1,28 +1,29 @@
 import { Injectable } from '@angular/core';
-import { Message } from '../models/message';
 import {
   HubConnection,
   HubConnectionBuilder,
   IHttpConnectionOptions,
 } from '@microsoft/signalr';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { AppSettings } from '../settings';
 import { TokenService } from './token.service';
+import { KeyExchange } from '../models/key-exchange';
+import { KeyExchangeResponse } from '../models/key-exchange-response';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ChatHub {
-  public message?: Message;
-  messageReceived: Subject<Message>;
+export class KeyExchangeHub {
+  public key?: KeyExchangeResponse;
+  keyReceived: Subject<KeyExchangeResponse>;
+  keyExchangedFinished: Subject<any>;
   private _hubConnection?: HubConnection;
+
   constructor(private _tokenService: TokenService) {
-    this.messageReceived = new Subject<Message>();
+    this.keyReceived = new Subject<KeyExchangeResponse>();
+    this.keyExchangedFinished = new Subject();
   }
 
-  public onMessageRecieved(): Observable<Message> {
-    return this.messageReceived.asObservable();
-  }
   public connect(): void {
     this.createConnection();
     this.registerOnServerEvents();
@@ -32,8 +33,8 @@ export class ChatHub {
   public disconnect() {
     this._hubConnection?.stop();
   }
-  public sendChatMessage(message: Message) {
-    this._hubConnection?.invoke('SendMessage', message);
+  public sendPublicKey(keyExchange: KeyExchange) {
+    this._hubConnection?.invoke('SendPublicKey', keyExchange);
   }
 
   private createConnection() {
@@ -43,7 +44,7 @@ export class ChatHub {
       },
     };
     this._hubConnection = new HubConnectionBuilder()
-      .withUrl(AppSettings.hubHost + '/hubs/chat', options)
+      .withUrl(AppSettings.hubHost + '/hubs/key-exchange', options)
       .build();
   }
 
@@ -51,7 +52,7 @@ export class ChatHub {
     this._hubConnection
       ?.start()
       .then(() => {
-        console.log('Chat hub connection started');
+        console.log('Key excahnge hub connection started');
       })
       .catch(() => {
         console.log('Error while establishing connection, retrying...');
@@ -60,11 +61,15 @@ export class ChatHub {
   }
 
   private registerOnServerEvents(): void {
-    this._hubConnection?.on('ReceiveMessage', (data) => {
+    this._hubConnection?.on('ReceivePublicKey', (data: KeyExchangeResponse) => {
       if (data) {
-        this.message = data;
-        this.messageReceived.next(data);
+        this.key = data;
+        this.keyReceived.next(data);
       }
+    });
+
+    this._hubConnection?.on('KeyExchangeFinished', () => {
+      this.keyExchangedFinished.next();
     });
   }
 }

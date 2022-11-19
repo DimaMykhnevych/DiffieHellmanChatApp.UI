@@ -29,6 +29,9 @@
               </div>
             </div>
           </form>
+          <div *ngIf="errorMessage" class="alert alert-danger">
+            {{ errorMessage }}
+          </div>
         </mat-card-content>
         <mat-card-actions>
           <button

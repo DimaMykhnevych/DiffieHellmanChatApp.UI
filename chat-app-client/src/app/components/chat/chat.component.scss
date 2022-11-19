@@ -43,6 +43,17 @@
           .padWithoutImage {
             margin-left: 5px;
           }
+
+          .system-message{
+            padding: 5px;
+            margin: 5px;
+            width: fit-content;
+            block-size: auto;
+            background-color: rgb(44, 44, 43);
+            border-radius: 7px;
+            color: whitesmoke;
+            font-size: 15px;
+          }
         }
   
         .myMessage {

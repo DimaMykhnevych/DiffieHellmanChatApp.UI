@@ -12,24 +12,34 @@
             *ngFor="let message of messages; index as i"
             class="message-field"
           >
-            <div
-              [class.myMessage]="isMyMessage(message.senderName)"
-              class="msg-wrapper d-flex align-items-center"
-            >
+            <div *ngIf="message.senderName">
               <div
-                class="message"
-                [class.padWithoutImage]="!isMyMessage(message.senderName)"
+                [class.myMessage]="isMyMessage(message.senderName)"
+                class="msg-wrapper d-flex align-items-center"
               >
-                <div>
-                  <small class="details">{{ message.senderName }}</small>
+                <div
+                  class="message"
+                  [class.padWithoutImage]="!isMyMessage(message.senderName)"
+                >
+                  <div>
+                    <small class="details">{{ message.senderName }}</small>
+                  </div>
+                  <div class="content">
+                    {{ message.content }}
+                  </div>
+                  <div class="time details">
+                    {{ message.sendingDate | date: "medium" }}
+                  </div>
+                  {{ i === messages.length - 1 ? scrollToBottom() : null }}
                 </div>
-                <div class="content">
-                  {{ message.content }}
-                </div>
-                <div class="time details">
-                  {{ message.sendingDate | date: "medium" }}
-                </div>
-                {{ i === messages.length - 1 ? scrollToBottom() : null }}
+              </div>
+            </div>
+            <div
+              *ngIf="!message.senderName"
+              class="d-flex justify-content-center"
+            >
+              <div class="system-message">
+                {{ message.content }}
               </div>
             </div>
           </div>
@@ -56,8 +66,18 @@
               mat-raised-button
               type="button"
               (click)="sendMessage()"
+              [disabled]="chattingEnabled"
             >
               <i class="fas fa-paper-plane"></i>
+            </button>
+            <button
+              class="ml-2"
+              mat-raised-button
+              type="button"
+              (click)="onKeyExchange()"
+              [hidden]="!chattingEnabled"
+            >
+              Exchange keys
             </button>
           </div>
         </mat-card-actions>

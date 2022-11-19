@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
@@ -30,16 +31,22 @@ export class LoginComponent implements OnInit {
   }
 
   public onLoginButtonClick(): void {
+    this.errorMessage = '';
     const username: string = this.form.value.login;
     this.performLogin({ username: username });
   }
 
   private performLogin(value: AuthForm): void {
-    this._auth.authorize(value).subscribe((authResponse: AuthResponse) => {
-      if (authResponse.isAuthorized) {
-        this._router.navigate(['/chat']);
+    this._auth.authorize(value).subscribe(
+      (authResponse: AuthResponse) => {
+        if (authResponse.isAuthorized) {
+          this._router.navigate(['/chat']);
+        }
+      },
+      (err: HttpErrorResponse) => {
+        this.errorMessage = err.error;
       }
-    });
+    );
   }
 
   private initializeForm(): void {
